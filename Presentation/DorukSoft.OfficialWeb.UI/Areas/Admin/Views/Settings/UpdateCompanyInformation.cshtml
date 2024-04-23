@@ -1,0 +1,45 @@
+﻿@model UpdateCompanyInformationDTO
+@{
+    Layout = "_Layout";
+}
+
+<form asp-action="UpdateCompanyInformation" asp-controller="Settings" asp-area="Admin" method="post" enctype="multipart/form-data">
+    <input asp-for="@Model.CompanyInformationId" type="hidden" class="form-control">
+    @if (Model.ImageUrl != null && Model.ImageUrl != "")
+    {
+        <div class="url-container">
+            <a href="@Model.ImageUrl" target="_blank">
+                <img src="@Model.ImageUrl" alt="Önizleme Resmi">
+            </a>
+        </div>
+    }
+    <div class="mb-3">
+        <label class="form-label">Görsel :</label>
+        <input asp-for="@Model.AddedImage" type="file" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Şirket Adı :</label>
+        <input asp-for="@Model.CompanyName" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Şirket Tipi :</label>
+        <input asp-for="@Model.CompanyTitle" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Whatsapp Telefon Numarası :</label>
+        <input asp-for="@Model.WhatsappPhoneNumber" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Telefon Numarası :</label>
+        <input asp-for="@Model.PhoneNumber" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">E-Mail :</label>
+        <input asp-for="@Model.Email" type="email" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Adres :</label>
+        <input asp-for="@Model.Address" type="text" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>

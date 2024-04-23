@@ -1,0 +1,31 @@
+﻿@model List<BlogListDTO>
+
+<div class="container sectionPadding">
+    <div style="display: flex; align-items: center;">
+        <a onclick="closePartialView()" href="#">
+            <i class="fa-solid fa-chevron-left" style="color: darkblue; font-weight: bold; font-size: 20px;"></i>
+        </a>
+        <h1 style="margin: auto;">Ürün Grupları</h1>
+    </div>
+    @if (Model != null && Model.Count > 0)
+    {
+        <ul class="card-list">
+            @foreach (var blog in Model)
+            {
+                <li class="card">
+                    <a class="card-imagenoblur" href="#" onclick="loadPartialView(event, 'GetBlogDetails?id=' + @blog.BlogId)" target="_blank" style="background-image: url(@blog.ImageUrl);" data-image-full="@blog.ImageUrl">
+                        <img src="@blog.ImageUrl" alt="@blog.Title" style="height: 200px; width: 100%;" />
+                    </a>
+                    <a class="card-description" href="@blog.ImageUrl" target="_blank">
+                        <h2>@blog.Title</h2>
+                    </a>
+                </li>
+            }
+        </ul>
+        <br />
+    }
+    else
+    {
+
+    }
+</div>

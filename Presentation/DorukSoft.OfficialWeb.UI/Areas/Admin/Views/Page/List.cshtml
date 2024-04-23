@@ -1,0 +1,44 @@
+﻿@model PagesListDTO
+@{
+    Layout = "_Layout";
+}
+<a asp-action="Create" asp-controller="Page" asp-area="Admin" class="btn btn-primary">Sayfa Ekle</a>
+<hr />
+<div class="table-responsive">
+    <table class="table table-dark mb-0">
+        <thead>
+            <tr>
+                <th>Sayfa Adı</th>
+                <th>Başlık</th>
+                <th>İçerik</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Hakkında</th>
+                <th>@Model.AboutPage!.Title</th>
+                <th>@Model.AboutPage.Content</th>
+                <th>
+                    <a class="btn btn-primary" asp-action="UpdateAboutPage" asp-controller="Page" asp-area="Admin">Güncelle</a>
+                </th>
+            </tr>
+            @if (Model.GenericPages != null)
+            {
+                @foreach (var genericPage in Model.GenericPages)
+                {
+                    <tr>
+                        <th>@genericPage.PageType</th>
+                        <th>@genericPage.PageTitle</th>
+                        <th>@genericPage.PageContent</th>
+                        <th>
+                            <a class="btn btn-danger" asp-route-id="@genericPage.PageId" asp-action="DeleteGenericPage" asp-controller="Page" asp-area="Admin">Sil</a>
+                            <a class="btn btn-primary" asp-route-id="@genericPage.PageId" asp-action="UpdateGenericPage" asp-controller="Page" asp-area="Admin">Güncelle</a>
+                        </th>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+</div>

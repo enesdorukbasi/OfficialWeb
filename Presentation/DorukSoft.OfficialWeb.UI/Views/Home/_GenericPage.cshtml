@@ -1,0 +1,91 @@
+﻿@model GenericPageListDTO
+
+<style>
+    #footer {
+        /* position: fixed;  */
+        bottom: 0;
+        width: 100%;
+    }
+
+    .list {
+        padding: 0;
+        margin: 0;
+    }
+
+        .list li {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+    .centerDiv {
+        width: 80%;
+        text-align: center;
+        margin: auto;
+    }
+
+    .listDiv {
+        width: 80%;
+        text-align: start;
+        margin: auto;
+    }
+
+    .bullet {
+        font-weight: bold;
+    }
+
+    .aboutDiv h1 {
+        font-weight: bold;
+    }
+
+    .aboutDiv p {
+        font-weight: bold;
+    }
+</style>
+
+<div class="centerDiv">
+    <br />
+    <h1>@Model.PageTitle</h1>
+    <br />
+    <p>@Model.PageContent</p>
+    <br />
+    @if (Model.PageType == DorukSoft.OfficialWeb.Domain.Enums.GenericPageType.ViewerPage)
+    {
+        @if (Model.ViewerPageMedias != null && Model.ViewerPageMedias.Count > 0)
+        {
+            <ul class="card-list">
+
+                @foreach (var viewer in Model.ViewerPageMedias)
+                {
+                    <li class="card">
+                        <a class="card-imageNonBlur" href="@viewer.MediaUrl" target="_blank" style="background-image: url(@viewer.MediaUrl);" data-image-full="@viewer.MediaUrl">
+                            <img class="card-imageNonBlur" src="@viewer.MediaUrl" alt="@viewer.ViewerPage" style="height: 200px;" />
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <h4>Eklenmiş bir dosya bulunmuyor.</h4>
+        }
+    }
+    else
+    {
+        <div class="listDiv">
+            @if (Model.ListItem != null && Model.ListItem.Count > 0)
+            {
+                <ul class="list" style="list-style-type: disc !important;">
+                    @foreach (var listItem in Model.ListItem)
+                    {
+                        <li><span class="bullet">-</span> @listItem</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <h4>Eklenmiş bir liste elemanı bulunmuyor.</h4>
+            }
+        </div>
+    }
+</div>

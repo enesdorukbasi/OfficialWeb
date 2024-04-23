@@ -1,0 +1,68 @@
+﻿@model CreateContactForProductDTO
+
+<link rel="stylesheet" href="~/css/ContactForProductStyle.css" />
+
+<div class="contactForProduct">
+    <div class="titleDiv">
+        <h4>Ürün Talep Formu</h4>
+    </div>
+    <div class="formDiv">
+        <form>
+            <input type="hidden" id="productId" class="form-control" asp-for="@Model.ProductId" aria-describedby="">
+            <input type="text" class="form-control" asp-for="@Model.ProductName" aria-describedby="" placeholder="Ürün Adı" disabled>
+            <input type="text" id="fullName" class="form-control" asp-for="@Model.FullName" aria-describedby="emailHelp" placeholder="Ad - Soyad">
+            <input type="email" id="email" class="form-control" asp-for="@Model.Email" aria-describedby="emailHelp" placeholder="E-Mail">
+            <input type="text" id="phoneNumber" class="form-control" asp-for="@Model.PhoneNumber" aria-describedby="emailHelp" placeholder="Telefon Numarası">
+            <textarea id="content" class="form-control" placeholder="Mesaj" asp-for="@Model.Content"></textarea>
+            <button id="submitBtn" type="button" onclick="submitForm()" class="btn btn-dark formButton">Mesajı Gönder</button>
+        </form>
+        <div id="successMessage" style="color: green;"></div>
+        <div id="errorMessage" style="color: red;"></div>
+    </div>
+</div>
+
+<script>
+    function submitForm() {
+        console.log("clicked");
+        event.preventDefault(); // Formun normal submit işlemini engelle
+
+        var productId = document.getElementById("productId").value;
+        var fullName = document.getElementById("fullName").value;
+        var email = document.getElementById("email").value;
+        var phoneNumber = document.getElementById("phoneNumber").value;
+        var content = document.getElementById("content").value;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/Home/ContactForProduct", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                var response = JSON.parse(xhr.responseText);
+                console.log(response);
+                document.getElementById("successMessage").textContent = response.messages[0];
+            } else {
+                var response = JSON.parse(xhr.responseText);
+                console.error(xhr.responseText);
+                document.getElementById("errorMessage").textContent = response.messages;
+            }
+        };
+
+        xhr.onerror = function () {
+            console.error(xhr.responseText);
+            document.getElementById("errorMessage").textContent = "İşlem sırasında bir hata oluştu.";
+        };
+
+        var data = JSON.stringify({
+            ProductId: productId,
+            ProductName: "",
+            FullName: fullName,
+            Email: email,
+            PhoneNumber: phoneNumber,
+            Content: content,
+        });
+
+        console.log(data);
+
+        xhr.send(data);
+    }
+</script>

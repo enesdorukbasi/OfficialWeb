@@ -1,0 +1,19 @@
+﻿@model AboutPageListDTO
+@{
+    Layout = "_Layout";
+}
+
+<form method="post" asp-action="UpdateAboutPage" asp-controller="Page" asp-area="Admin">
+    <input asp-for="@Model.AboutId" type="hidden" class="form-control">
+    <div class="text text-danger" asp-validation-summary="ModelOnly"></div>
+    <br />
+    <div class="mb-3">
+        <label class="form-label">Sayfa Başlığı :</label>
+        <input asp-for="@Model.Title" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Sayfa Başlığı :</label>
+        <input asp-for="@Model.Content" type="text" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>

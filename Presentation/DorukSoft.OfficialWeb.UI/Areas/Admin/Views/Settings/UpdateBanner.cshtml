@@ -1,0 +1,88 @@
+﻿@model UpdateBannerDTO
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    .url-container {
+        width: 300px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+        .url-container img {
+            max-width: 100%;
+            height: auto;
+        }
+
+    .url-container-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+    }
+</style>
+
+
+<form asp-action="UpdateBanner" asp-controller="Settings" asp-area="Admin" method="post">
+    <input type="hidden" asp-for="@Model.ImageUrl" />
+    <input type="hidden" asp-for="@Model.BannerId" />
+    <div class="text text-danger" asp-validation-summary="ModelOnly"></div>
+    <div class="url-container-wrapper">
+        <div class="url-container">
+            <a href="@Model.ImageUrl" target="_blank">
+                <img src="@Model.ImageUrl" alt="Önizleme Resmi">
+            </a>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Görsel :</label>
+        <input asp-for="@Model.AddedImage" type="file" class="form-control">
+        <button id="removeUploadedImageButton" type="button" class="btn btn-danger" onclick="clearImage()">Görseli Kaldır</button>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Başlık :</label>
+        <input asp-for="@Model.Title" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">İçerik :</label>
+        <input asp-for="@Model.Content" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-check-label">Ana Sayfada Gösterilsin : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <input class="form-check-input" type="checkbox" id="showMainPageCheckbox" asp-for="@Model.IsShowMainPage">
+    </div>
+    <div class="mb-3">
+        <label class="form-check-label">Hakkında Sayfasında Gösterilsin : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <input class="form-check-input" type="checkbox" id="showAboutPageCheckbox" asp-for="@Model.IsShowAboutPage">
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#removeUploadedImageButton").hide();
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            var fileInput = document.querySelector('input[type="file"]');
+            var elementToHide = document.getElementById('removeUploadedImageButton'); // Gizlenmek istenen öğenin id'si
+
+            fileInput.addEventListener('change', function () {
+                if (fileInput.files.length > 0) {
+                    elementToHide.style.display = 'block'; // Dosya seçildiğinde öğeyi gizle
+                } else {
+                    elementToHide.style.display = 'none'; // Dosya seçilmediğinde öğeyi göster
+                }
+            });
+        });
+        function showRemoveButton() {
+            $("#removeUploadedImageButton").show();
+        }
+        function clearImage() {
+            var imageInput = document.querySelector('input[type="file"]');
+            imageInput.value = null;
+            $("#removeUploadedImageButton").hide();
+            // removeButton.style.display = 'none';
+        }
+    </script>
+}

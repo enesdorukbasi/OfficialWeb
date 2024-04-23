@@ -1,0 +1,37 @@
+﻿<div class="vertical-menu">
+    <div data-simplebar class="h-100">
+
+        <div class="navbar-brand-box">
+            <a href="index.html" class="logo">
+                <i class="mdi mdi-alpha-x-circle"></i>
+                <span>
+                    Official
+                </span>
+            </a>
+        </div>
+
+        <!--- Sidemenu -->
+        <div id="sidebar-menu">
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu">
+                <li class="menu-title">Menü</li>
+                <li><a href="/Admin/AdminDashboard/Index/" class="waves-effect"><i class="feather-airplay"></i><span>Dashboard</span></a></li>
+                @if (User.IsInRole("SuperAdmin"))
+                {
+                    <li><a asp-action="List" asp-controller="AppUser" asp-area="Admin" class="waves-effect"><i class="fa-solid fa-user"></i><span>Kullanıcılar</span></a></li>
+                }
+                else if(User.IsInRole("Admin"))
+                {
+                    <li><a asp-action="List" asp-controller="Page" asp-area="Admin" class="waves-effect"><i class="fa-solid fa-file"></i><span>Sayfalar</span></a></li>
+                    <li><a asp-action="List" asp-controller="Category" asp-area="Admin" class="waves-effect"><i class="fa-solid fa-list"></i><span>Kategoriler</span></a></li>
+                    <li><a asp-action="List" asp-controller="Product" asp-area="Admin" class="waves-effect"><i class="fa-brands fa-product-hunt"></i><span>Ürünler</span></a></li>
+                    <li><a asp-action="List" asp-controller="Blog" asp-area="Admin" class="waves-effect"><i class="fa-solid fa-align-left"></i><span>Blog</span></a></li>
+                    <li><a asp-action="List" asp-controller="Contact" asp-area="Admin" class="waves-effect"><i class="fa-solid fa-comments"></i><span>Mesaj Kutusu</span></a></li>
+                    <li><a asp-action="SettingsPage" asp-controller="Settings" asp-area="Admin" class="waves-effect"><i class="fa-solid fa-gear"></i><span>Ayarlar</span></a></li>
+                }
+                <li><a asp-action="LogOut" asp-controller="AppUser" asp-area="Admin" class="waves-effect"><i class="fas fa-window-close"></i><span>Çıkış Yap</span></a></li>
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+</div>

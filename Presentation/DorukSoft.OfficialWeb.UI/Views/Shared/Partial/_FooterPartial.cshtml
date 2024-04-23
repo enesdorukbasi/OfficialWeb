@@ -1,0 +1,19 @@
+﻿@model List<SocialMediaListDTO>
+
+
+
+<footer id="footer">
+    <div class="container">
+        <ul class="soc-media-ul">
+            @if (Model != null && Model.Count > 0)
+            {
+                @foreach (var socialMedia in Model)
+                {
+                    <li>
+                        <a href="@socialMedia.Url" target="_blank"><i class="fa-brands fa-facebook-f" style="color:white !important;"></i></a>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+</footer>

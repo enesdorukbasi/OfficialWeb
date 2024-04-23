@@ -1,0 +1,73 @@
+﻿@model UpdateSliderDTO
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    .url-container {
+        width: 300px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+        .url-container img {
+            max-width: 100%;
+            height: auto;
+        }
+
+    .url-container-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+    }
+</style>
+
+<form asp-action="UpdateSlider" asp-controller="Settings" asp-area="Admin" method="post" enctype="multipart/form-data">
+    <input asp-for="@Model.SliderId" type="hidden" class="form-control">
+    <div class="url-container-wrapper">
+        <div class="url-container">
+            <a href="@Model.SliderImageUrl" target="_blank">
+                <img src="@Model.SliderImageUrl" alt="Önizleme Resmi">
+            </a>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Görsel  (Yeni seçtiğiniz görseli kaldırmazsanız önceki silinecektir):</label>
+        <input asp-for="@Model.AddedSliderImage" type="file" class="form-control">
+        <button id="removeUploadedImageButton" type="button" class="btn btn-danger" onclick="clearImage()">Görseli Kaldır</button>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">İçerik :</label>
+        <input asp-for="@Model.SliderContent" type="text" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#removeUploadedImageButton").hide();
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            var fileInput = document.querySelector('input[type="file"]');
+            var elementToHide = document.getElementById('removeUploadedImageButton'); // Gizlenmek istenen öğenin id'si
+
+            fileInput.addEventListener('change', function () {
+                if (fileInput.files.length > 0) {
+                    elementToHide.style.display = 'block'; // Dosya seçildiğinde öğeyi gizle
+                } else {
+                    elementToHide.style.display = 'none'; // Dosya seçilmediğinde öğeyi göster
+                }
+            });
+        });
+        function showRemoveButton() {
+            $("#removeUploadedImageButton").show();
+        }
+        function clearImage() {
+            var imageInput = document.querySelector('input[type="file"]');
+            imageInput.value = null;
+            $("#removeUploadedImageButton").hide();
+            // removeButton.style.display = 'none';
+        }
+    </script>
+}

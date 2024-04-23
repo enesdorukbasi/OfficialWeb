@@ -1,0 +1,26 @@
+﻿@model RegisterAppUserCommandRequest
+@{
+    Layout = "_Layout";
+}
+
+<form asp-action="Create" asp-controller="AppUser" asp-area="Admin" method="post">
+    <div class="mb-3 text-danger" asp-validation-summary="ModelOnly">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Email</label>
+        <input type="email" class="form-control" aria-describedby="emailHelp" asp-for="@Model.Email">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Parola</label>
+        <input type="password" class="form-control" asp-for="@Model.Password">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Ad</label>
+        <input type="text" class="form-control" asp-for="@Model.Name">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Soyad</label>
+        <input type="text" class="form-control" asp-for="@Model.Surname">
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>

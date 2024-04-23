@@ -1,0 +1,11 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+@await Html.PartialAsync("~/Views/Shared/Partial/_HeaderPartial.cshtml")
+<body>
+    <div class="wrapper">
+        @RenderBody()
+    </div>
+    @await Html.PartialAsync("~/Views/Shared/Partial/_ScriptPartial.cshtml")
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

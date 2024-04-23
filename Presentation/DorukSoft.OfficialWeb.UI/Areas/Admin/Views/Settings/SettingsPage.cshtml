@@ -1,0 +1,229 @@
+﻿@model SettingsPageListDTO
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    .url-container {
+        width: 300px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+        .url-container img {
+            max-width: 100%;
+            min-height: 80%;
+            height: 80%;
+        }
+
+    .url-container-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .social-media-container {
+        display: flex; /* İçerikleri yatay olarak hizala */
+        align-items: center; /* İçerikleri dikey olarak ortala */
+        margin-right: 10px; /* Sağ taraftaki boşluk */
+        margin-bottom: 10px; /* Alt taraftaki boşluk */
+    }
+
+    .social-button {
+        margin-right: 10px; /* Sağ taraftaki boşluk */
+    }
+
+    .delete-button {
+        margin-left: auto; /* Sil butonunu sağa yasla */
+    }
+
+    .row {
+        display: grid;
+        grid-template-columns: 1fr auto; /* İlk sütun genişliği otomatik, ikinci sütun genişliği esnek */
+        gap: 10px; /* Elemanlar arası boşluk */
+    }
+
+    .col {
+        flex: 1; /* Elemanları eşit genişlikte yay */
+    }
+
+        .col:first-child {
+            margin-right: auto; /* İlk sütunu sağ tarafa yasla */
+        }
+
+        .col:last-child {
+            margin-left: auto; /* Son sütunu sol tarafa yasla */
+        }
+
+    .formContainer {
+        padding: 20px;
+        background: #F0F0F0;
+        border-radius: 25px;
+        border: 1px dashed black
+    }
+
+    .social-button {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #007bff; /* Varsayılan renk: mavi */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .social-button:hover {
+            background-color: #0056b3; /* Hover rengi */
+        }
+
+        .social-button i {
+            color: #fff; /* İkon rengi */
+            font-size: 24px; /* İkon boyutu */
+        }
+</style>
+
+<div class="container formContainer">
+    <h4>Şirket Bilgileri</h4>
+    <br />
+    <input type="text" class="form-control" asp-for="@Model.CompanyInformation!.CompanyName" disabled>
+    <br />
+    <input type="text" class="form-control" asp-for="@Model.CompanyInformation!.CompanyTitle" disabled>
+    <br />
+    <input type="text" class="form-control" asp-for="@Model.CompanyInformation!.WhatsappPhoneNumber" disabled>
+    <br />
+    <input type="text" class="form-control" asp-for="@Model.CompanyInformation!.PhoneNumber" disabled>
+    <br />
+    <input type="text" class="form-control" asp-for="@Model.CompanyInformation!.Email" disabled>
+    <br />
+    <input type="text" class="form-control" asp-for="@Model.CompanyInformation!.Address" disabled>
+    <br />
+    <a asp-action="UpdateCompanyInformation" asp-controller="Settings" asp-area="Admin" class="btn btn-info">Güncelle</a>
+</div>
+
+<br />
+
+<div class="container formContainer">
+    <div class="row">
+        <div class="col">
+            <h4>Sosyal Medya Hesapları</h4>
+        </div>
+        <div class="col">
+            <a asp-action="CreateSocialMedia" asp-controller="Settings" asp-area="Admin" class="btn btn-info">Ekle</a>
+        </div>
+    </div>
+    <br />
+    <div class="social-media-container">
+        @if (Model.SocialMedias != null && Model.SocialMedias.Count > 0)
+        {
+            @foreach (var socialMedia in Model.SocialMedias)
+            {
+                <div>
+                    <div class="social-button" onclick="window.location.href='@socialMedia.Url'">
+                        <i class="@socialMedia.Icon"></i>
+                    </div>
+                    <div class="delete-button">
+                        <a asp-route-id="@socialMedia.SocialMediaId" asp-action="DeleteSocialMedia" asp-controller="Settings" asp-area="Admin" class="btn btn-danger">Sil</a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <h5>Sosyal medya hesabı bulunmuyor</h5>
+        }
+    </div>
+</div>
+
+<br />
+
+<div class="container formContainer">
+    <div class="row">
+        <div class="col">
+            <h4>Sliderlar</h4>
+        </div>
+        <div class="col">
+            <a asp-action="CreateSlider" asp-controller="Settings" asp-area="Admin" class="btn btn-info">Ekle</a>
+        </div>
+    </div>
+    <div class="mb-3" id="updatedViewer">
+        @if (Model.Sliders != null && Model.Sliders.Count > 0)
+        {
+            <label class="form-label">Yüklü Dosyalar :</label>
+            <div class="url-container-wrapper">
+                @foreach (var slider in Model.Sliders!)
+                {
+                    <div class="url-container">
+                        <a href="@slider.SliderImageUrl" target="_blank">
+                            <img src="@slider.SliderImageUrl" alt="Önizleme Resmi">
+                            <h3>@slider.SliderContent</h3>
+                        </a>
+                        <div class="row">
+                            <div class="col">
+                                <a asp-route-id="@slider.SliderId" asp-action="DeleteSlider" asp-controller="Settings" asp-area="Admin" class="btn btn-danger">Sil</a>
+                            </div>
+                            <div class="col">
+                                <a asp-route-id="@slider.SliderId" asp-action="UpdateSlider" asp-controller="Settings" asp-area="Admin" class="btn btn-primary">Güncelle</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <h5>Slider bulunmuyor</h5>
+        }
+    </div>
+</div>
+
+
+<br />
+
+<div class="container formContainer">
+    <div class="row">
+        <div class="col">
+            <h4>Bannerlar</h4>
+        </div>
+        <div class="col">
+            <a asp-action="CreateBanner" asp-controller="Settings" asp-area="Admin" class="btn btn-info">Ekle</a>
+        </div>
+    </div>
+    <div class="mb-3" id="updatedViewer">
+        <label class="form-label">Yüklü Dosyalar :</label>
+        <div class="url-container-wrapper">
+            @if (Model.Banners != null && Model.Banners.Count > 0)
+            {
+                @foreach (var banner in Model.Banners!)
+                {
+                    <div class="url-container">
+                        <a href="@banner.ImageUrl" target="_blank">
+                            <img src="@banner.ImageUrl" alt="Önizleme Resmi">
+                            <h6>@banner.Title</h6>
+                            <h6>@(banner.IsShowMainPage ? "Ana Sayfa da gösteriliyor" : "Ana Sayfa da gösterilmiyor")</h6>
+                        </a>
+                        <div class="row">
+                            <div class="col">
+                                <a asp-route-id="@banner.BannerId" asp-action="DeleteBanner" asp-controller="Settings" asp-area="Admin" class="btn btn-danger">Sil</a>
+                            </div>
+                            <div class="col">
+                                <a asp-route-id="@banner.BannerId" asp-action="UpdateBanner" asp-controller="Settings" asp-area="Admin" class="btn btn-primary">Güncelle</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <br />
+                <br />
+            }
+            else
+            {
+                <h5>Banner bulunmuyor</h5>
+            }
+        </div>
+    </div>
+</div>
+<br />
+<br />
+<br />
+<br />

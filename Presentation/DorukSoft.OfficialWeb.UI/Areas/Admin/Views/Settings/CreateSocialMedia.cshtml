@@ -1,0 +1,21 @@
+﻿@model CreateSocialMediaDTO
+@{
+    Layout = "_Layout";
+}
+
+<form asp-action="CreateSocialMedia" asp-controller="Settings" asp-area="Admin" method="post">
+    <div class="mb-3">
+        <label class="form-label">Url :</label>
+        <input asp-for="@Model.Url" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">İkon :</label>
+        <select id="iconSelect" class="form-select" asp-for="@Model.Icon">
+            <option value="fa-brands fa-facebook-f">Facebook</option>
+            <option value="fa-brands fa-instagram">Kullanıcı</option>
+            <option value="fa-brands fa-twitter">Twitter</option>
+            <option value="fa-brands fa-linkedin-in">LinkedIn</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>

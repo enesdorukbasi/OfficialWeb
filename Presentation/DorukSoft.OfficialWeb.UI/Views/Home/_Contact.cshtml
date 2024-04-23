@@ -1,0 +1,32 @@
+﻿@model CreateContactDTO
+
+<div class="container">
+    <h1>İletişim</h1>
+    <hr />
+    <div class="row">
+        <div class="col-sm-4 col-sm-offset-4">
+            <form asp-action="Contact" asp-controller="Home" class="center-block">
+                <div class="text text-danger" asp-validation-summary="ModelOnly"></div>
+                <div class="form-group">
+                    <label class="sr-only" for="inputName">Tam Ad</label>
+                    <input asp-for="@Model.FullName" class="form-control" type="text" placeholder="Ad - Soyad" required />
+                </div>
+                <div class="form-group">
+                    <label for="inputMail" class="sr-only">Email Adresi</label>
+                    <input asp-for="@Model.Email" class="form-control" type="email" placeholder="Mail Adresi" required />
+                </div>
+                <div class="form-group">
+                    <label for="inputPhone" class="sr-only">Telefon Numarası</label>
+                    <input asp-for="@Model.PhoneNumber" class="form-control" type="text" placeholder="Telefon Numarası" required />
+                </div>
+                <div class="form-group">
+                    <label for="inputMessage" class="sr-only">Mesajınız</label>
+                    <textarea asp-for="@Model.Content" class="form-control" placeholder="Mesajınız" cols="30" rows="8" required></textarea>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-default center-block" type="submit">Gönder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

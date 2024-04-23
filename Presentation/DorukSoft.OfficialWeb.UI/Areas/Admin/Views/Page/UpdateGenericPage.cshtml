@@ -1,0 +1,252 @@
+﻿@model UpdateGenericPageDTO
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    #ListItem {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Minimum 200 piksel, maksimum ekrana sığacak kadar genişlik */
+        grid-gap: 10px; /* Öğeler arasındaki boşluk */
+        padding: 0;
+        list-style-type: none;
+    }
+
+    #FileList {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Minimum 200 piksel, maksimum ekrana sığacak kadar genişlik */
+        grid-gap: 10px; /* Öğeler arasındaki boşluk */
+        padding: 0;
+        /* list-style-type: none; */
+    }
+
+    .url-container {
+        width: 300px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+        .url-container img {
+            max-width: 100%;
+            height: auto;
+        }
+
+    .url-container-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+    }
+</style>
+
+<form name="createForm" id="createForm" onsubmit="submitForm()" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="@Model.PageId" class="form-control" />
+    <div class="mb-3">
+        <label class="form-label">Sayfa Başlığı :</label>
+        <input asp-for="@Model.PageTitle" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">İçerik :</label>
+        <input asp-for="@Model.PageContent" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Sayfa Tipi :</label>
+        <select asp-for="@Model.PageType" asp-items="@ViewBag.PageTypes" onchange="toggleDivVisibility()" class="form-control" disabled></select>
+    </div>
+    <div class="mb-3" id="viewer" style="display:none;">
+        <label class="form-label">Dosyalar :</label>
+        <input type="file" asp-for="@Model.AddedViewerPageMedias" class="form-control" multiple />
+        <input type="hidden" asp-for="@Model.DeletedViewerPageMediasJSON" class="form-control" />
+        <ul id="FileList" style="padding-left: 20px;"></ul>
+    </div>
+    <div class="mb-3" id="updatedViewer" style="display:none;">
+        <label class="form-label">Yüklü Dosyalar :</label>
+        <div class="url-container-wrapper">
+            @foreach (var viewer in Model.ViewerPageMedias!)
+            {
+                <div class="url-container">
+                    <a href="@viewer.MediaUrl" target="_blank">
+                        <img src="@viewer.MediaUrl" alt="Önizleme Resmi">
+                        <h3>@viewer.Title</h3>
+                    </a>
+                    <a class="btn btn-danger" onclick="AddToDeletedViewerPageMedia('@viewer.MediaUrl')">Kaldır</a>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="mb-3" id="viewer">
+        <label class="form-label">Silinecek Dosyalar :</label>
+        <ul id="DeletedListItem" name="DeletedListItem" asp-for="DeletedListItem" style="padding-left: 20px;"></ul>
+    </div>
+    <div class="mb-3" id="list" style="display:block;">
+        <label class="form-label" style="display:block;">Yazılar :</label>
+        <button type="button" onclick="addListItem()" class="btn btn-primary" style="display: inline-block;  width:8%">Yazıyı Ekle</button>
+        <input id="ListInput" type="text" class="form-control" style="display: inline-block; width:91%" />
+        <input asp-for="@Model.AddedListItemJson" type="hidden" class="form-control" />
+        <br />
+        <ul id="ListItem" name="ListItem" asp-for="ListItem" style="padding-left: 20px;"></ul>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>
+
+@section Scripts {
+    <script>
+        var selectedFiles = [];
+        var deletedFiles = [];
+
+        window.onload = function () {
+            toggleDivVisibility();
+
+            var pageType = document.getElementById("PageType").value;
+            if (pageType === "ListPage") {
+                var metinJson = document.getElementById("AddedListItemJson").value;
+                var metinLst = JSON.parse(metinJson);
+
+                for (var i = 0; i < metinLst.length; i++) {
+                    var listItem = document.createElement("li");
+                    var textNode = document.createTextNode(metinLst[i]); // Boşluk ekleyerek metin oluştur
+                    listItem.appendChild(textNode);
+
+                    var removeButton = document.createElement("button");
+                    removeButton.textContent = "Kaldır";
+                    removeButton.className = "btn btn-danger";
+                    removeButton.style.marginLeft = "5px"; // Boşluk için margin-left kullan
+                    removeButton.setAttribute("onclick", "removeItem(this)");
+
+                    listItem.appendChild(removeButton);
+
+                    document.getElementById("ListItem").appendChild(listItem);
+                }
+            } else {
+
+            }
+        }
+
+        function toggleDivVisibility() {
+            var pageType = document.getElementById("PageType").value;
+            if (pageType === "ListPage") {
+                document.getElementById("list").style.display = "block";
+                document.getElementById("viewer").style.display = "none";
+                document.getElementById("updatedViewer").style.display = "none";
+            } else if (pageType === "ViewerPage") {
+                document.getElementById("list").style.display = "none";
+                document.getElementById("viewer").style.display = "block";
+                document.getElementById("updatedViewer").style.display = "block";
+            }
+        }
+
+        function addListItem() {
+            var metin = document.getElementById("ListInput").value;
+            console.log(metin)
+            if (metin != "" || metin != null) {
+                var listItem = document.createElement("li");
+
+                var textNode = document.createTextNode(metin); // Boşluk ekleyerek metin oluştur
+                listItem.appendChild(textNode);
+
+                var removeButton = document.createElement("button");
+                removeButton.textContent = "Kaldır";
+                removeButton.className = "btn btn-danger";
+                removeButton.style.marginLeft = "5px"; // Boşluk için margin-left kullan
+                removeButton.setAttribute("onclick", "removeItem(this)");
+
+                listItem.appendChild(removeButton);
+
+                document.getElementById("ListItem").appendChild(listItem);
+            }
+        }
+
+        function AddToDeletedViewerPageMedia(url) {
+            deletedFiles.push(url);
+            console.log(url)
+            if (url != "" || url != null) {
+                var listItem = document.createElement("li");
+
+                var textNode = document.createTextNode(url);
+                listItem.appendChild(textNode);
+
+                var removeButton = document.createElement("button");
+                removeButton.textContent = "Kaldır";
+                removeButton.className = "btn btn-danger";
+                removeButton.style.marginLeft = "5px";
+                removeButton.setAttribute("onclick", "removeForDeletedFiles(this)");
+
+                listItem.appendChild(removeButton);
+
+                document.getElementById("DeletedListItem").appendChild(listItem);
+            }
+        }
+
+        document.getElementById("AddedViewerPageMedias").addEventListener('change', function () {
+            var files = document.getElementById("AddedViewerPageMedias").files;
+            document.getElementById("FileList").textContent = "";
+            var dosyaListesi = document.getElementById("FileList");
+
+            for (var i = 0; i < files.length; i++) {
+                var listItem = document.createElement("li");
+                listItem.textContent = files[i].name;
+
+                // var removeButton = document.createElement("button");
+                // removeButton.textContent = "Kaldır";
+                // removeButton.className = "btn btn-danger btn-sm";
+                // removeButton.style.marginLeft = "5px"; // Boşluk için margin-left kullan
+                // removeButton.setAttribute("onclick", "removeItem(this)");
+
+                // listItem.appendChild(removeButton);
+
+                dosyaListesi.appendChild(listItem);
+                selectedFiles.push(files[i]);
+                console.log(selectedFiles);
+            }
+        });
+
+        function removeItem(button) {
+            console.log("itemss");
+            var listItem = button.parentNode;
+            listItem.parentNode.removeChild(listItem);
+        }
+
+        function removeForDeletedFiles(button) {
+            var listItem = button.parentNode;
+            listItem.parentNode.removeChild(listItem);
+            deletedFiles = deletedFiles.filter(value => value != listItem.textContent.replace("Kaldır", ""));
+        }
+
+        function submitForm() {
+            console.log("Adım1");
+            var pageType = document.getElementById("PageType").value;
+            console.log("Adım1");
+            if (pageType === "ListPage") {
+                var ul = document.getElementById("ListItem");
+                var liElements = ul.getElementsByTagName("li");
+                var listItemArray = [];
+                for (var i = 0; i < liElements.length; i++) {
+                    listItemArray.push(liElements[i].textContent);
+                }
+
+                var listItemArrayUpdated = listItemArray.map(x => x.replace("Kaldır", ""));
+                document.getElementById("AddedListItemJson").value = JSON.stringify(listItemArrayUpdated);
+            }
+            else {
+                document.getElementById("DeletedViewerPageMediasJSON").value = JSON.stringify(deletedFiles);
+            }
+            console.log("Adım2");
+
+            var form = document.getElementById('createForm');
+            var formData = new FormData(form);
+
+            console.log("Adım3");
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", '@Url.Action("UpdateGenericPage", "Page", new { area = "Admin" })', false);
+            xhr.setRequestHeader("Content-Type", "multipart/form-data");
+            // xhr.onreadystatechange = function () {
+            //     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            //         console.log("Veri başarıyla gönderildi.");
+            //     }
+            // };
+            console.log("Adım4");
+            xhr.send(formData);
+            console.log("Adım5");
+        }
+    </script>
+}

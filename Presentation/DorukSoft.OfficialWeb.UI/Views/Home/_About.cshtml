@@ -1,0 +1,52 @@
+﻿@model AboutPageListDTO
+
+<style>
+    #footer {
+        position: fixed; /* Ekranın altında sabit kalacak */
+        bottom: 0; /* Ekranın alt kenarına hizalanacak */
+        width: 100%; /* Ekranın tam genişliğinde olacak */
+        background-color: #333; /* Footer arka plan rengi */
+        color: white; /* Yazı rengi */
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .aboutDiv {
+        width: 70%;
+        text-align: center;
+        margin: auto;
+    }
+
+        .aboutDiv h1 {
+            font-weight: bold;
+        }
+
+        .aboutDiv p {
+            font-weight: bold;
+        }
+</style>
+
+<div style="position: relative; width: 100%; height: 400px; object-fit: none !important;">
+    <img src="@Model.Banner!.ImageUrl" style="width: 100%; height: 100%;" />
+    <div style="position: absolute; top: 80%; left: 50%; transform: translate(-50%, -50%); text-align: center; justify-content:end ; color: white; font-size: 24px; font-weight: bold;">
+        <h1 class="bannerTitle">@Model.Banner!.Title</h1>
+        <p class="bannerContent">@Model.Banner!.Content</p>
+    </div>
+</div>
+<br />
+<div class="aboutDiv">
+    <h1>@Model.Title</h1>
+    <br />
+    <p>@Model.Content</p>
+</div>
+<br />
+<br />
+<br />
+<br />
+<br />

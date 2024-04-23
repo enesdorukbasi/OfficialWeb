@@ -1,0 +1,30 @@
+﻿@model AppUserLoginDTO
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <link href="~/css/loginpagestyle.css" rel="stylesheet" />
+    <script src="~/js/loginpagescript.js"></script>
+</head>
+<body>
+    <div class="login-page">
+        <div class="form">
+            @*  <form asp-action="Register" asp-controller="Auth" method="post" class="register-form">
+            <input type="text" placeholder="name" />
+            <input type="password" placeholder="password" />
+            <input type="text" placeholder="email address" />
+            <button>create</button>
+            <p class="message">Already registered? <a href="#">Sign In</a></p>
+            </form> *@
+            <form asp-area="Admin" asp-controller="AppUser" asp-action="Login" method="post" class="login-form">
+                <input type="text" placeholder="Email" asp-for="@Model.Email" />
+                <input type="password" placeholder="Parola" asp-for="@Model.Password" />
+                <button type="submit">Giriş Yap</button>
+                @* <p class="message">Not registered? <a href="#">Create an account</a></p> *@
+            </form>
+        </div>
+    </div>
+</body>
+</html>

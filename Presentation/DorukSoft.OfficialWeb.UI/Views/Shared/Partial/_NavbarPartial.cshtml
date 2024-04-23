@@ -1,0 +1,51 @@
+﻿@using Newtonsoft.Json
+@model PagesListDTO
+
+@{
+    var serializedModel = JsonConvert.SerializeObject(Model);
+}
+
+<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css'>
+<header role="header">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container" style="display: inline-block;">
+            <div class="navbar-header">
+                <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".navbar-collapse" role="button">
+                    <span class="sr-only">Toggle Navigation</span>
+
+                    <span class="icon-bar"></span>
+
+                    <span class="icon-bar"></span>
+
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="#" onclick="closePartialView()" class="navbar-brand">
+                    <img src="@Model.ImageUrl"/>
+                </a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right js-nav" style="display: inline-block;">
+                    <li><a href="#home" onclick="closePartialView()">Ana Sayfa</a></li>
+
+                    <li><a href="#" onclick="loadPartialView(event, 'About')">Hakkımızda</a></li>
+
+                    <li><a href="#categories" onclick="closePartialView()">Ürün Grupları</a></li>
+
+                    <li><a href="#" onclick="loadPartialView(event, 'Products')">Ürünler</a></li>
+
+                    <li><a href="#blogs">Blog</a></li>
+
+                    @if(Model.GenericPages!=null && Model.GenericPages.Count > 0)
+                    {
+                        @foreach (var genericPage in Model.GenericPages)
+                        {
+                            <li><a href="#" onclick="loadPartialView(event, 'GetGenericPage?id=' + @genericPage.PageId)">@genericPage.PageTitle</a></li>
+                        }
+                    }   
+
+                    <li><a href="#contact">İletişim</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

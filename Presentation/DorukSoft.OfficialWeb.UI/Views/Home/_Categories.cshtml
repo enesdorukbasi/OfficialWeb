@@ -1,0 +1,45 @@
+﻿@model List<CategoryListDTO>
+
+<div class="container sectionPadding">
+    <div style="display: flex; align-items: center;">
+        <a onclick="closePartialView()" href="#">
+            <i class="fa-solid fa-chevron-left" style="color: darkblue; font-weight: bold; font-size: 20px;"></i>
+        </a>
+        @if (Model != null && Model.Count > 0)
+        {
+            @if (Model.First().ParentCategory != null)
+            {
+                <h1 style="margin: auto;">@(Model.First().ParentCategory!.Name) - Alt Ürün Grupları</h1>
+            }
+            else
+            {
+                <h1 style="margin: auto;">Ürün Grupları</h1>
+            }
+        }
+        else
+        {
+            <h1 style="margin: auto;">Ürün Grupları</h1>
+        }
+    </div>
+    @if (Model != null && Model.Count > 0)
+    {
+        <ul class="card-list">
+            @foreach (var category in Model)
+            {
+                <li class="card">
+                    <a class="card-imagenoblur" href="#" onclick="loadPartialView(event, 'GetSubCategories?id=' + @category.CategoryId)" target="_blank" style="background-image: url(@category.ImageUrl);" data-image-full="@category.ImageUrl">
+                        <img src="@category.ImageUrl" alt="@category.Name" style="height: 200px; width: 100%;" />
+                    </a>
+                    <a class="card-description" href="@category.ImageUrl" target="_blank">
+                        <h2>@category.Name</h2>
+                    </a>
+                </li>
+            }
+        </ul>
+        <br />
+    }
+    else
+    {
+
+    }
+</div>

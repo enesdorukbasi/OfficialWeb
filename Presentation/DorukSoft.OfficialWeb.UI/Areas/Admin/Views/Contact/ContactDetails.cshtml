@@ -1,0 +1,90 @@
+﻿@model ContactListDTO
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    .contactInfos {
+        width: 80%;
+        padding: 15px;
+        background-color: #0047AB;
+        margin: auto;
+        border-radius: 15px;
+    }
+
+    .form-label {
+        color: white;
+    }
+
+    .showedButton {
+        margin: auto;
+        text-align: center;
+        color: white;
+    }
+
+        .showedButton > i {
+            margin: auto;
+            color: white;
+            font-size: 20px;
+            text-align: center;
+        }
+</style>
+
+<a asp-action="List" asp-controller="Contact" asp-area="Admin"><i style="font-size: 25px; color: black;" class="fa-solid fa-chevron-left"></i></a>
+
+<div class="contactInfos">
+    <a class="showedButton" onclick="toggleDiv()" href="#">
+        <i id="showedIcon" class="fa-solid fa-chevron-up"></i>
+        <span id="buttonText"> Gizle</span>
+    </a>
+    <div id="Infos" style="display: block;">
+        <div class="mb-3">
+            <label class="form-label">Ad-Soyad :</label>
+            <input asp-for="@Model.FullName" type="text" class="form-control" disabled>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">E-Mail :</label>
+            <input asp-for="@Model.Email" type="text" class="form-control" disabled>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Telefon Numarası :</label>
+            <input asp-for="@Model.PhoneNumber" type="text" class="form-control" disabled>
+        </div>
+        @if (Model.Product != null)
+        {
+            <div class="mb-3">
+                <label class="form-label">Ürün Adı :</label>
+                <input asp-for="@Model.Product.Title" class="form-control" disabled>
+            </div>
+        }
+        <div class="mb-3">
+            <label class="form-label">Mesaj :</label>
+            <textarea asp-for="@Model.Content" class="form-control" disabled></textarea>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        var showedClassName = "fa-solid fa-chevron-down";
+        var hiddenClassName = "fa-solid fa-chevron-up";
+        var isShowedDetails = true;
+
+        function toggleDiv() {
+            var div = document.getElementById("Infos");
+            var icon = document.getElementById("showedIcon");
+            var buttonText = document.getElementById("buttonText");
+
+            if (div.style.display === "none") {
+                div.style.display = "block";
+                icon.className = hiddenClassName;
+                buttonText.innerText = "Gizle";
+            } else {
+                div.style.display = "none";
+                icon.className = showedClassName;
+                buttonText.innerText = "Göster";
+            }
+        }
+    </script>
+}

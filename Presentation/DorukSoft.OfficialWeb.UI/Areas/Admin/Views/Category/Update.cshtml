@@ -1,0 +1,111 @@
+﻿@model UpdateCategoryDTO
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    .url-container {
+        width: 300px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+        .url-container img {
+            max-width: 100%;
+            height: auto;
+        }
+
+    .url-container-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+    }
+</style>
+
+<form asp-action="Update" asp-controller="Category" asp-area="Admin" method="post" enctype="multipart/form-data">
+    <input asp-for="@Model.CategoryId" type="hidden" class="form-control">
+    <div asp-validation-summary="ModelOnly"></div>
+    <br />
+    <div class="url-container">
+        <a href="@Model.ImageUrl" target="_blank">
+            <img src="@Model.ImageUrl" alt="Önizleme Resmi">
+        </a>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Kategori Adı :</label>
+        <input asp-for="@Model.Name" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Açıklaması :</label>
+        <input asp-for="@Model.Content" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Kelimeler ("," ile ayırarak yazınız) :</label>
+        <input asp-for="@Model.Keywords" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-check-label">Ana Sayfada Gösterilsin : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <input class="form-check-input" type="checkbox" id="showMainPageCheckbox" asp-for="@Model.IsShowMainPage">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Görsel (Yeni seçtiğiniz görseli kaldırmazsanız önceki silinecektir) :</label>
+        <div class="input-group mb-3">
+            <input asp-for="@Model.ChangedImage" type="file" class="form-control" onchange="showRemoveButton()">
+            @* <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button> *@
+            <button id="removeUploadedImageButton" type="button" class="btn btn-danger" onclick="clearImage()">Görseli Kaldır</button>
+        </div>        
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Ana Kategori Mi? :</label>
+        <select id="categorySelect" class="form-control" aria-label="Ana kategori mi?" asp-for="@Model.IsMainCategory">
+            <option value="true">Evet</option>
+            <option value="false">Hayır</option>
+        </select>
+    </div>
+    @if (Model.Categories != null && Model.Categories.Count > 0)
+    {
+        <div class="mb-3 categoryDiv">
+            <label class="form-label">Kategoriler :</label>
+            <select class="form-control" aria-label="Kategori seçiniz" asp-for="@Model.ParentCategoryId">
+                <option>Ana Kategori Seçiniz</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.CategoryId">@category.Name</option>
+                }
+            </select>
+        </div>
+    }
+
+    <button class="btn btn-primary" type="submit">Kaydet</button>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var selectedOption = $("#categorySelect").val();
+            $("#removeUploadedImageButton").hide();
+            if (selectedOption === "true") {
+                $('.categoryDiv').hide();
+            } else {
+                $('.categoryDiv').show();
+            }
+            $('#categorySelect').change(function () {
+                var selectedOption = $(this).val();
+                if (selectedOption === "true") {
+                    $('.categoryDiv').hide();
+                } else {
+                    $('.categoryDiv').show();
+                }
+            });
+        });
+        function showRemoveButton() {
+            $("#removeUploadedImageButton").show();
+        }
+        function clearImage() {
+            var imageInput = document.querySelector('input[type="file"]');
+            imageInput.value = null;
+            $("#removeUploadedImageButton").hide();
+            // removeButton.style.display = 'none';
+        }
+    </script>
+}

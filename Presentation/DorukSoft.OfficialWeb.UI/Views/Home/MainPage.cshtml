@@ -1,0 +1,126 @@
+﻿@using Newtonsoft.Json
+@model MainPageListDTO
+@{
+    Layout = "_Layout";
+}
+
+@await Html.PartialAsync("~/Views/Shared/Partial/_NavbarPartial.cshtml", new PagesListDTO() { GenericPages = Model.GenericPages, AboutPage = Model.AboutPage, Banners = Model.Banner, ImageUrl = Model.CompanyInformation!.ImageUrl })
+
+<div id="sections">
+    <section id="home" class="sec-main sectionPadding" style="height: 800px !important;">
+        <div id="carouselExampleDark" class="carousel carousel-dark slide">
+            <div class="carousel-indicators">
+                @if (Model.Sliders != null && Model.Sliders.Count > 0)
+                {
+                    @for (var i = 0; i < Model.Sliders.Count; i++)
+                    {
+                        <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="@i" class="@(i == 0? "active" : "")" aria-current="@(i == 0? "true" : "false")" aria-label="Slayt @i"></button>
+                    }
+                }
+            </div>
+            <div class="carousel-inner" style="opacity:1;">
+                @if (Model.Sliders != null && Model.Sliders.Count > 0)
+                {
+                    @for (var i = 0; i < Model.Sliders.Count; i++)
+                    {
+                        <div class="carousel-item @(i == 0? "active" : "")" data-bs-interval="10000">
+                            <img src="@Model.Sliders[i].SliderImageUrl" style="height:730px;" class="d-block w-100" alt="...">
+                            <div class="carousel-caption d-none d-md-block">
+                                <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Sliders[i].SliderContent</font></font></p>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Öncesi</font></font></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Sonraki</font></font></span>
+            </button>
+        </div>
+    </section>
+    <section id="categories" class="sec-about sectionPadding">
+        <div class="container">
+            <h1>Ürün Grupları</h1>
+            @if (Model.Categories != null && Model.Categories.Count > 0)
+            {
+                <ul class="card-list">
+                    @foreach (var category in Model.Categories)
+                    {
+                        <li class="card">
+                            <a class="card-image" href="#" onclick="loadPartialView(event, 'GetSubCategories?id=' + @category.CategoryId)" target="_blank" style="background-image: url(@category.ImageUrl);" data-image-full="@category.ImageUrl">
+                                <img src="@category.ImageUrl" alt="@category.Name" style="height: 200px;" />
+                            </a>
+                            <a class="card-description" href="@category.ImageUrl" target="_blank">
+                                <h2>@category.Name</h2>
+                            </a>
+                        </li>
+                    }
+                </ul>
+                <br />
+                <a class="showAll" onclick="loadPartialView(event, 'Categories')" href="#">Tümünü Gör</a>
+            }
+            else
+            {
+            }
+        </div>
+    </section>
+    <section id="blogs" class="sec-services sectionPadding">
+        <div class="container">
+            <h1>Bloglar</h1>
+            @if (Model.Blogs != null && Model.Blogs.Count > 0)
+            {
+                <ul class="card-list">
+                    @foreach (var blog in Model.Blogs)
+                    {
+                        <li class="card">
+                            <a class="card-image" href="@blog.ImageUrl" target="_blank" style="background-image: url(@blog.ImageUrl);" data-image-full="@blog.ImageUrl">
+                                <img src="@blog.ImageUrl" alt="@blog.Title" style="height: 200px;" />
+                            </a>
+                            <a class="card-description" href="@blog.ImageUrl" target="_blank">
+                                <h2>@blog.Title</h2>
+                            </a>
+                        </li>
+                    }
+                </ul>
+                <br />
+                <a class="showAll" onclick="loadPartialView(event, 'Blogs')" href="#">Tümünü Gör</a>
+            }
+            else
+            {
+
+            }
+        </div>
+    </section>
+    <section id="banner" class="sec-folio">
+        <div style="position: relative; width: 100%; height: 550px; object-fit: none !important;">
+            <img src="@Model.Banner.ImageUrl" style="width: 100%; height: 100%;" />
+            <div style="position: absolute; top: 80%; left: 50%; transform: translate(-50%, -50%); text-align: center; justify-content:end ; color: white; font-size: 24px; font-weight: bold;">
+                <h1 class="bannerTitle">@Model.Banner.Title</h1>
+                <p class="bannerContent">@Model.Banner.Content</p>
+            </div>
+        </div>
+    </section>
+    <section id="contact" class="sec-contact sectionPadding">
+    </section>
+</div>
+
+<div id="partialContainer" class="sectionPadding">
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/Partial/_FooterPartial.cshtml", new List<SocialMediaListDTO>(Model.SocialMediaLists != null ? Model.SocialMediaLists : []))
+@section Scripts {
+    <script>
+        window.onload = function () {
+            var alerts = @Html.Raw(JsonConvert.SerializeObject(TempData["Alerts"]));
+            if (alerts != null && alerts.length > 0) {
+                alerts.forEach(function (alert) {
+                    window.alert(alert);
+                });
+            }
+        };
+    </script>
+}

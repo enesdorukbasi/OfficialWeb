@@ -1,0 +1,17 @@
+﻿@model CreateSliderDTO
+@{
+    Layout = "_Layout";
+}
+
+<form asp-action="CreateSlider" asp-controller="Settings" asp-area="Admin" method="post" enctype="multipart/form-data">
+    <div class="text text-danger" asp-validation-summary="ModelOnly"></div>
+    <div class="mb-3">
+        <label class="form-label">Görsel :</label>
+        <input asp-for="@Model.SliderImageUrl" type="file" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">İçerik :</label>
+        <input asp-for="@Model.SliderContent" type="text" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>

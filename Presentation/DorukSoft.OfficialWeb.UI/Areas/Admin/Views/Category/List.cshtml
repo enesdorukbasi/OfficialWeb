@@ -1,0 +1,84 @@
+﻿@model List<CategoryListDTO>
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    .rounded-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+</style>
+
+<a asp-action="Create" asp-controller="Category" asp-area="Admin" class="btn btn-primary">Kategori Ekle</a>
+<hr />
+
+<div class="table-responsive">
+    <table class="table table-dark mb-0">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Görsel</th>
+                <th>Kategori Adı</th>
+                <th>Ana sayfada görülür mü?</th>
+                <th>Alt Kategori Sayısı</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model)
+            {
+                <tr>
+                    <th style="text-align: center; vertical-align: middle;">
+                        <a onclick="toggleDivVisibility('@category.CategoryId')" style="display: inline-block;">
+                            <i id="@($"icon-{category.CategoryId}")" style="color: @(category.SubCategories != null && category.SubCategories.Count > 0? "white" : "grey")" class="fa-solid fa-plus"></i>
+                        </a>
+                    </th>
+                    <th class="th-center-middle"><img src="@category.ImageUrl" class="rounded-image" alt="Category Image"></th>
+                    <th class="th-center-middle">@category.Name</th>
+                    <th class="th-center-middle">@(category.IsShowMainPage ? "Görülür" : "Görülmez")</th>
+                    <th class="th-center-middle">@(category.SubCategories != null ? $"{category.SubCategories.Count()} Adet Alt Kategori Bulunuyor" : "Alt Kategorisi Bulunmuyor")</th>
+                    <th class="th-center-middle">
+                        <a class="btn btn-danger" asp-route-id="@category.CategoryId" asp-action="Delete" asp-controller="Category" asp-area="Admin">Sil</a>
+                        <a class="btn btn-primary" asp-route-id="@category.CategoryId" asp-action="Update" asp-controller="Category" asp-area="Admin">Güncelle</a>
+                    </th>
+                </tr>
+                @if (category.SubCategories != null && category.SubCategories.Count > 0)
+                {
+                    @foreach (var subCategory in category.SubCategories)
+                    {
+                        <tr id="@($"div-{category.CategoryId}-{subCategory.CategoryId}")" style="display: none;">
+                            <th class="th-center-middle"></th>
+                            <th class="th-center-middle"><img src="@subCategory.ImageUrl" class="rounded-image" alt="Category Image"></th>
+                            <th class="th-center-middle">@subCategory.Name</th>
+                            <th class="th-center-middle">@(subCategory.IsShowMainPage ? "Görülür" : "Görülmez")</th>
+                            <th class="th-center-middle"></th>
+                            <th class="th-center-middle">
+                                <a class="btn btn-danger" asp-route-id="@subCategory.CategoryId" asp-action="Delete" asp-controller="Category" asp-area="Admin">Sil</a>
+                                <a class="btn btn-primary" asp-route-id="@subCategory.CategoryId" asp-action="Update" asp-controller="Category" asp-area="Admin">Güncelle</a>
+                            </th>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleDivVisibility(categoryId) {
+            var divId = `tr[id^="div-${categoryId}-"]`;
+            var iconId = `#icon-${categoryId}`;
+            $(divId).toggle();
+            if ($(divId).is(":visible")) {
+                $(iconId).removeClass("fa-plus").addClass("fa-minus");
+            } else {
+                $(iconId).removeClass("fa-minus").addClass("fa-plus");
+            }
+        }
+    </script>
+}

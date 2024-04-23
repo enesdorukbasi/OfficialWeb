@@ -1,0 +1,64 @@
+﻿@model ProductListDTO
+@{
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" href="~/css/ProductDetailsStyle.css" />
+
+<div class="container">
+    <div style="display: flex; align-items: center;">
+        <a onclick="closePartialView()" href="#">
+            <i class="fa-solid fa-chevron-left" style="color: darkblue; font-weight: bold; font-size: 20px;"></i>
+        </a>
+        <h1 style="margin: auto;">@Model.Title</h1>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <div id="slider" class="owl-carousel product-slider">
+                @if (Model.ImageUrls != null && Model.ImageUrls.Count > 0)
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="slider" class="owl-carousel product-slider">
+                                @foreach (var image in Model.ImageUrls)
+                                {
+                                    <div class="item">
+                                        <img src="@image" style="width: 100%; height: 50%;" />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <br />
+            <div id="thumb" class="owl-carousel product-thumb">
+                @if (Model.ImageUrls != null && Model.ImageUrls.Count > 0)
+                {
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div id="slider" class="owl-carousel product-slider">
+                                @foreach (var image in Model.ImageUrls)
+                                {
+                                    <div class="item">
+                                        <img src="@image" />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-6">
+            <p>
+                @Model.Content
+            </p>
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("~/Views/Home/_ContactForProduct.cshtml", new CreateContactForProductDTO { ProductId = Model.ProductId, ProductName = Model.Title });
+
+@* <script src="~/js/ProductDetailsScript.js" asp-append-version="true"></script> *@

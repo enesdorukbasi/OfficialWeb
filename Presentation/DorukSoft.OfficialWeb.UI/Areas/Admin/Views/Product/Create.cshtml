@@ -1,0 +1,155 @@
+﻿@model CreateProductDTO
+@using System.Text.Json;
+@using System.Text.Json.Serialization
+@{
+    Layout = "_Layout";
+}
+
+<form name="createForm" id="createForm" onsubmit="submitForm()" method="post" enctype="multipart/form-data">
+    <div class="text text-danger" asp-validation-summary="ModelOnly"></div>
+    <div class="mb-3">
+        <label class="form-label">Ürün Adı :</label>
+        <input asp-for="@Model.Title" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Açıklaması :</label>
+        <input asp-for="@Model.Content" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Kelimeler ("," ile ayırarak yazınız) :</label>
+        <input asp-for="@Model.Keywords" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Görsel :</label>
+        <input asp-for="@Model.UpdatedImages" type="file" class="form-control" multiple>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Satış Tipi :</label>
+        <select asp-for="@Model.ProductSalesType" asp-items="@ViewBag.SaleTypes" class="form-control"></select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Fiyat (bulunmuyorsa 0 giriniz) :</label>
+        <input asp-for="@Model.Price" type="number" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Vergi (bulunmuyorsa 0 giriniz) :</label>
+        <input asp-for="@Model.Tax" type="number" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">İndirim (bulunmuyorsa 0 giriniz) :</label>
+        <input asp-for="@Model.Discount" type="number" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Adet (bulunmuyorsa 0 giriniz) :</label>
+        <input asp-for="@Model.Quantity" type="number" class="form-control">
+    </div>
+    @if (Model.Categories != null && Model.Categories.Count > 0)
+    {
+        <div class="mb-3 categoryDiv">
+            <label class="form-label">Kategoriler :</label>
+            <input id="CategoryId" name="CategoryId"  asp-for="@Model.CategoryId" type="hidden"/>
+            <select id="categorySelect" class="form-control" aria-label="Kategori seçiniz">
+                <option>Kategori Seçiniz</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.CategoryId">@category.Name</option>
+                }
+            </select>
+        </div>
+    }
+
+    <button class="btn btn-primary" type="submit">Kaydet</button>
+</form>
+
+@section Scripts {
+    <script>
+        var categories = @Html.Raw(JsonSerializer.Serialize(Model.Categories, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve }));
+        var selectedCategoryId = 0;
+
+        document.getElementById('categorySelect').addEventListener('change', function () {
+            var categoryId = this.value;
+            selectedCategoryId = categoryId;
+            var subCategories = getSubCategoriesById(categoryId);
+
+            if (subCategories != null && subCategories.length > 0) {
+                clearCategoryDiv();
+                var subCategorySelect = document.createElement('select');
+                subCategorySelect.id = 'subCategorySelect';
+                subCategorySelect.name = 'subCategorySelect';
+                subCategorySelect.className = 'mt-3 form-control';
+                subCategorySelect.setAttribute('aria-label', 'Alt Kategori Seçiniz');
+
+                var defaultOption = document.createElement('option');
+                defaultOption.text = 'Alt Kategori Seçiniz';
+                subCategorySelect.appendChild(defaultOption);
+
+                subCategories.forEach(function (subCategory) {
+                    var option = document.createElement('option');
+                    option.text = subCategory.Name;
+                    option.value = subCategory.CategoryId;
+                    subCategorySelect.appendChild(option);
+                });
+
+                var categoryDiv = document.querySelector('.categoryDiv');
+                categoryDiv.appendChild(subCategorySelect);
+                document.getElementById('subCategorySelect').addEventListener('change', function () {
+                    var categoryId = this.value;
+                    selectedCategoryId = categoryId;
+                });
+            } else {
+                // Eğer alt kategoriler yoksa, seçilen kategorinin id'sini alabiliriz
+                clearCategoryDiv();
+            }
+        });
+
+        function clearCategoryDiv() {
+            var categoryDiv = document.querySelector('.categoryDiv');
+            var elements = categoryDiv.children;
+            for (var i = 0; i < elements.length; i++) {
+                var element = elements[i];
+                if (element && element.id != 'categorySelect' && element.id != 'CategoryId' && !element.classList.contains('form-label')) {
+                    categoryDiv.removeChild(element);
+                }
+            }
+        }
+
+        function getSubCategoriesById(categoryId) {
+            for (var i = 0; i < categories.$values.length; i++) {
+                if (categories.$values[i].CategoryId == categoryId) {
+                    var subCategories = categories.$values[i].SubCategories;
+                    var subCategoriesArray = convertValuesToArray(subCategories);
+                    return subCategoriesArray;
+                }
+            }
+            return [];
+        }
+
+        function convertValuesToArray(data) {
+            if (data && data.$values) {
+                return data.$values.map(function (item) {
+                    return item;
+                });
+            }
+            return [];
+        }
+
+        function submitForm() {
+            document.getElementById('CategoryId').value = selectedCategoryId;
+
+            var form = document.getElementById('createForm');
+            var formData = new FormData(form);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", '@Url.Action("Create", "Product", new { area = "Admin" })', false);
+            // Content-Type'ı multipart/form-data olarak ayarlayın
+            xhr.setRequestHeader("Content-Type", "multipart/form-data");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    console.log("Veri başarıyla gönderildi.");
+                }
+            };
+            // FormData nesnesini doğrudan gönderin
+            xhr.send(formData)
+        }
+    </script>
+}

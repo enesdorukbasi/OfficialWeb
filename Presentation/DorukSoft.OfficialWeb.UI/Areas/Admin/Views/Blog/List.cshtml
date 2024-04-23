@@ -1,0 +1,42 @@
+﻿@model List<BlogListDTO>
+@{
+    Layout = "_Layout";
+}
+<style>
+    .rounded-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+</style>
+
+<a asp-action="Create" asp-controller="Blog" asp-area="Admin" class="btn btn-primary">Ekle</a>
+<hr />
+<div class="table-responsive">
+    <table class="table table-dark mb-0">
+        <thead>
+            <tr>
+                <th>Görsel</th>
+                <th>Başlık</th>
+                <th>Ana sayfada gösteriliyor mu?</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var blog in Model)
+            {
+                <tr>
+                    <th class="th-center-middle"><img src="@(blog.ImageUrl)" class="rounded-image" alt="Blog Görseli"></th>
+                    <th class="th-center-middle">@blog.Title</th>
+                    <th class="th-center-middle">@(blog.IsShowMainPage ? "Evet" : "Hayır")</th>
+                    <th>
+                        <a class="btn btn-danger" asp-route-id="@blog.BlogId" asp-action="Delete" asp-controller="Blog" asp-area="Admin">Sil</a>
+                        <a class="btn btn-primary" asp-route-id="@blog.BlogId" asp-action="Update" asp-controller="Blog" asp-area="Admin">Güncelle</a>
+                    </th>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

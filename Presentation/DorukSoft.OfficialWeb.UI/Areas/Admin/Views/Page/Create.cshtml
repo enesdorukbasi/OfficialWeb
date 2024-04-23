@@ -1,0 +1,147 @@
+﻿@model CreateGenericPageDTO
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    #ListItem {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Minimum 200 piksel, maksimum ekrana sığacak kadar genişlik */
+        grid-gap: 10px; /* Öğeler arasındaki boşluk */
+        padding: 0;
+        list-style-type: none;
+    }
+
+    #FileList {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Minimum 200 piksel, maksimum ekrana sığacak kadar genişlik */
+        grid-gap: 10px; /* Öğeler arasındaki boşluk */
+        padding: 0;
+        /* list-style-type: none; */
+    }
+</style>
+
+<form name="createForm" id="createForm" onsubmit="submitForm()" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label class="form-label">Sayfa Başlığı :</label>
+        <input asp-for="@Model.PageTitle" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">İçerik :</label>
+        <input asp-for="@Model.PageContent" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Sayfa Tipi :</label>
+        <select asp-for="@Model.PageType" asp-items="@ViewBag.PageTypes" onchange="toggleDivVisibility()" class="form-control"></select>
+    </div>
+    <div class="mb-3" id="viewer" style="display:none;">
+        <label class="form-label">Dosyalar :</label>
+        <input type="file" asp-for="@Model.ViewerPageMedias" class="form-control" multiple /><br />
+        <ul id="FileList" style="padding-left: 20px;"></ul>
+    </div>
+    <div class="mb-3" id="list" style="display:block;">
+        <label class="form-label" style="display:block;">Yazılar :</label>
+        <button type="button" onclick="addListItem()" class="btn btn-primary" style="display: inline-block;  width:8%">Yazıyı Ekle</button>
+        <input id="ListInput" type="text" class="form-control" style="display: inline-block; width:91%" />
+        <input asp-for="@Model.ListItemJson" type="hidden" class="form-control" />
+        <br />
+        <ul id="ListItem" name="ListItem" asp-for="ListItem" style="padding-left: 20px;"></ul>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>
+
+@section Scripts {
+    <script>
+        var selectedFiles = [];
+
+        function toggleDivVisibility() {
+            var pageType = document.getElementById("PageType").value;
+            console.log(pageType);
+            if (pageType === "ListPage") {
+                document.getElementById("list").style.display = "block";
+                document.getElementById("viewer").style.display = "none";
+            } else if (pageType === "ViewerPage") {
+                document.getElementById("list").style.display = "none";
+                document.getElementById("viewer").style.display = "block";
+            }
+        }
+
+        function addListItem() {
+            var metin = document.getElementById("ListInput").value;
+            console.log(metin)
+            if (metin != "" || metin != null) {
+                var listItem = document.createElement("li");
+
+                var textNode = document.createTextNode(metin); // Boşluk ekleyerek metin oluştur
+                listItem.appendChild(textNode);
+
+                var removeButton = document.createElement("button");
+                removeButton.textContent = "Kaldır";
+                removeButton.className = "btn btn-danger";
+                removeButton.style.marginLeft = "5px"; // Boşluk için margin-left kullan
+                removeButton.setAttribute("onclick", "removeItem(this)");
+
+                listItem.appendChild(removeButton);
+
+                document.getElementById("ListItem").appendChild(listItem);
+            }
+        }
+
+        document.getElementById("ViewerPageMedias").addEventListener('change', function () {
+            var files = document.getElementById("ViewerPageMedias").files;
+            document.getElementById("FileList").textContent = "";
+            var dosyaListesi = document.getElementById("FileList");
+
+            for (var i = 0; i < files.length; i++) {
+                var listItem = document.createElement("li");
+                listItem.textContent = files[i].name;
+
+                // var removeButton = document.createElement("button");
+                // removeButton.textContent = "Kaldır";
+                // removeButton.className = "btn btn-danger btn-sm";
+                // removeButton.style.marginLeft = "5px"; // Boşluk için margin-left kullan
+                // removeButton.setAttribute("onclick", "removeItem(this)");
+
+                // listItem.appendChild(removeButton);
+
+                dosyaListesi.appendChild(listItem);
+                selectedFiles.push(files[i]);
+                console.log(selectedFiles);
+            }
+        });
+
+        function removeItem(button) {
+            var listItem = button.parentNode;
+            listItem.parentNode.removeChild(listItem);
+        }
+
+        function submitForm() {
+            var ul = document.getElementById("ListItem");
+            var liElements = ul.getElementsByTagName("li");
+            var listItemArray = [];
+            for (var i = 0; i < liElements.length; i++) {
+                listItemArray.push(liElements[i].textContent);
+            }
+
+            var listItemArray = listItemArray.map(x => x.replace("Kaldır", ""));
+            document.getElementById("ListItemJson").value = JSON.stringify(listItemArray)
+
+            var form = document.getElementById('createForm');
+            var formData = new FormData(form);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", '@Url.Action("Create", "Page", new { area = "Admin" })', false);
+            // Content-Type'ı multipart/form-data olarak ayarlayın
+            xhr.setRequestHeader("Content-Type", "multipart/form-data");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    console.log("Veri başarıyla gönderildi.");
+                }
+            };
+            // FormData nesnesini doğrudan gönderin
+            xhr.send(formData)
+        }
+
+    </script>
+}

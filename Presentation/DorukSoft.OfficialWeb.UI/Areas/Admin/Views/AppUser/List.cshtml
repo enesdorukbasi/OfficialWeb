@@ -1,0 +1,78 @@
+﻿@model List<AppUserListDTO>
+@{
+    Layout = "_Layout";
+}
+<a asp-action="Create" asp-controller="AppUser" asp-area="Admin" class="btn btn-primary">Ekle</a>
+<hr />
+<div class="table-responsive">
+    <table class="table table-dark mb-0">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Email</th>
+                <th>Ad-Soyad</th>
+                <th>Rol</th>
+                <th>Aktif mi?</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <th>@user.AppUserId</th>
+                    <th>@user.Email</th>
+                    <th>@user.FullName</th>
+                    <th>@user.AppRole!.Definition</th>
+                    <th>
+                        @if (user.AppRole.Definition == "SuperAdmin")
+                        {
+                        }
+                        else
+                        {
+                            <form id="statusForm_@user.AppUserId" asp-action="ChangeStatus" asp-controller="AppUser" asp-area="Admin" class="d-flex justify-content-center">
+                                <input type="hidden" name="userId" value="@user.AppUserId" /> <!-- Hidden input to store userId -->
+                                <input class="statusCheckbox form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked_@user.AppUserId" @(user.IsActive ? "checked" : "")>
+                            </form>
+                        }
+                    </th>
+                    <th>
+                        @if (user.AppRole.Definition == "SuperAdmin")
+                        {
+                        }
+                        else
+                        {
+                            <a class="btn btn-danger" asp-action="Delete" asp-controller="AppUser" asp-area="Admin" asp-route-id="@user.AppUserId">Sil</a>
+                            <a class="btn btn-primary" asp-action="Update" asp-controller="AppUser" asp-area="Admin" asp-route-id="@user.AppUserId">Güncelle</a>
+                        }
+                    </th>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(".statusCheckbox").change(function () {
+                var formId = $(this).closest("form").attr("id");
+                var isChecked = $(this).is(":checked");
+                var userId = $(this).closest("form").find("[name='userId']").val();
+                console.log("Çalıştı" + userId);
+                // AJAX request to update status
+                $.ajax({
+                    url: $("#" + formId).attr("action"),
+                    type: "POST",
+                    data: { id: userId },
+                    success: function (response) {
+                        // Handle success
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                    }
+                });
+            });
+        });
+    </script>
+}
